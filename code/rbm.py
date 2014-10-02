@@ -87,7 +87,7 @@ class RBM(object):
     self.vbias += lr * numpy.mean(self.input - nv_samples, axis=0)
     self.hbias += lr * numpy.mean(ph_sample - nh_means, axis=0)
 
-    monitoring_cost = self.get_reconstruction_cost();
+    monitoring_cost = self.get_reconstruction_cost()
     return monitoring_cost
 
   def get_pseudo_likelihood_cost(self, updates):
@@ -101,9 +101,13 @@ class RBM(object):
     pre_sigmoid_activation_v = numpy.dot(sigmoid_activation_h, self.W.T) + self.vbias
     sigmoid_activation_v = sigmoid(pre_sigmoid_activation_v)
 
-    cross_entropy = - numpy.mean(
-      numpy.sum(self.input * numpy.log(sigmoid_activation_v) +
-      (1 - self.input) * numpy.log(1 - sigmoid_activation_v), axis=1))
+    import pdb
+    pdb.set_trace()
 
-    return cross_entropy
+    cost = numpy.mean((self.input - sigmoid_activation_v)**2)
+    return cost
 
+    # cross_entropy = - numpy.mean(
+    #   numpy.sum(self.input * numpy.log(sigmoid_activation_v) +
+    #   (1 - self.input) * numpy.log(1 - sigmoid_activation_v), axis=1))
+    # return cross_entropy
