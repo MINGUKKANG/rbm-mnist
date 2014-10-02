@@ -80,34 +80,15 @@ class RBM(object):
         nv_means, nv_samples,\
         nh_means, nh_samples = self.gibbs_hvh(nh_samples)
 
-    # chain_end = nv_sample
-
-    self.W += lr * (numpy.dot(self.input.T, ph_sample)
+    self.W += lr * (numpy.dot(self.input.T, ph_mean)
                     - numpy.dot(nv_samples.T, nh_means))
     self.vbias += lr * numpy.mean(self.input - nv_samples, axis=0)
-    self.hbias += lr * numpy.mean(ph_sample - nh_means, axis=0)
+    self.hbias += lr * numpy.mean(ph_mean - nh_means, axis=0)
 
-    monitoring_cost = self.get_reconstruction_cost()
+    monitoring_cost = numpy.mean(numpy.square(self.input - nv_means))
+
     return monitoring_cost
 
   def get_pseudo_likelihood_cost(self, updates):
     """ no use """
     return
-
-  def get_reconstruction_cost(self):
-    pre_sigmoid_activation_h = numpy.dot(self.input, self.W) + self.hbias
-    sigmoid_activation_h = sigmoid(pre_sigmoid_activation_h)
-
-    pre_sigmoid_activation_v = numpy.dot(sigmoid_activation_h, self.W.T) + self.vbias
-    sigmoid_activation_v = sigmoid(pre_sigmoid_activation_v)
-
-    import pdb
-    pdb.set_trace()
-
-    cost = numpy.mean((self.input - sigmoid_activation_v)**2)
-    return cost
-
-    # cross_entropy = - numpy.mean(
-    #   numpy.sum(self.input * numpy.log(sigmoid_activation_v) +
-    #   (1 - self.input) * numpy.log(1 - sigmoid_activation_v), axis=1))
-    # return cross_entropy
